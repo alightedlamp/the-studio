@@ -1,22 +1,18 @@
-/* ----
-
-    The Studio example allows the user to click a few buttons and create a modern
-    masterpiece ala Diebenkorn, Rothko, Motherwell, Newman, etc. You know, those
-    50s guys that obsessed over truth.
-
----- */
-
 $(document).ready(function() {
-	/* Sets studio size based on browser width to constrain canvas to screen */
+    // Sets studio size based on browser width to constrain canvas to screen
     setStudioSize();
 
-    /* Lets user drag painting around within the studio */
-    $("#painting").draggable({containment: "#studio", scroll: false});
-    $("#moreinfo").draggable({containment: "#studio", scroll: false});
+    $("#painting").draggable({
+        containment: "#studio",
+        scroll: false
+    });
+    $("#moreinfo").draggable({
+        containment: "#studio",
+        scroll: false
+    });
     $("button").hover(function() {
         $(this).toggleClass("buttonHover");
     });
-    /* Toggles info canvas */
     $("#moreinfoLink").click(function() {
         toggleInfo();
     });
@@ -32,14 +28,11 @@ $(document).ready(function() {
     });
 });
 
-
-/* For the decision-making-impaired */
 function doEverything() {
     if ($("#moreinfo").css("visibility") == "visible") {
         $("#moreinfo").css("visibility", "hidden");
     }
 
-    /* Reset current canvas */
     trash();
 
     var width = randomNum(3, maxWidth());
@@ -49,52 +42,48 @@ function doEverything() {
     setStudioSize();
     setBackground();
     drawRectangles();
-    /*drawTriangle();*/
     drawGesture();
     drawLines();
 }
 
 
-/* ----
+// The informers
 
-    Some studio assitants
+// Returns width and height of canvas for limiting random numbers
+function getWidth() {
+    return $("#paintingBg").width();
+}
 
----- */
+function getHeight() {
+    return $("#paintingBg").height();
+}
 
-/* The informers */
-
-
-/* Returns width and height of canvas for limiting random numbers */
-function getWidth() {return $("#paintingBg").width();}
-function getHeight() {return $("#paintingBg").height();}
-
-/* Gets context
-    Note: This is used repeatedly, there must be a better way */
 function getBgContext() {
     var canvas = document.getElementById("paintingBg");
     var context = canvas.getContext("2d");
     return context;
 }
+
 function getMgContext() {
     var canvas = document.getElementById("paintingMg");
     var context = canvas.getContext("2d");
     return context;
 }
+
 function getFgContext() {
     var canvas = document.getElementById("paintingFg");
     var context = canvas.getContext("2d");
     return context;
 }
 
-/* Makes sure user input is valid and subtly warns if not */
+// Makes sure user input is valid and subtly warns if not
 function checkInput(width, height) {
     var width = document.forms["userOptions"]["canvasUserWidth"].value;
     var height = document.forms["userOptions"]["canvasUserHeight"].value;
 
     if (width >= 901 || height >= 901 || width <= 49 || height <= 49 || width.isNaN() || height.isNaN()) {
         $("#warning").css("color", "red");
-    }
-    else {
+    } else {
         if ($("#warning").css("color") == "rgb(255, 0, 0)") {
             $("#warning").css("color", "black");
         }
@@ -103,38 +92,43 @@ function checkInput(width, height) {
     }
 }
 
-/* Sets max dimensions -- may be used later to adjust based on screen width */
-function maxWidth() {return 900;}
-function maxHeight() {return 900;}
+// Sets max dimensions -- may be used later to adjust based on screen width
+function maxWidth() {
+    return 900;
+}
 
-/* The randoms */
+function maxHeight() {
+    return 900;
+}
 
-/* Gets a random number, though I think at the moment still inaccurately */
+// Gets a random number, though I think at the moment still inaccurately
 function randomNum(digits, limit) {
     digits = Math.pow(10, digits);
     if (limit) {
         limit = limit + 10;
         var number = limit;
-        while(number >= limit) {
+        while (number >= limit) {
             number = Math.floor(Math.random() * digits);
         }
         return number;
-    }
-    else {
+    } else {
         var number = Math.floor(Math.random() * digits);
         return number;
     }
 }
-function randomColor() {return "#" + randomNum(7, 999999);}
+
+function randomColor() {
+    return "#" + randomNum(7, 999999);
+}
 
 
-/* The assistants */
+// The assistants
 
 function buildStretcher(width, height) {
     var newWidth;
     var newHeight;
 
-    /* Check where dimensions are coming from */
+    // Check where dimensions are coming from
     if (width !== undefined && height !== undefined) {
         while (width < 40 || width > maxWidth() || height < 40 || height > maxWidth() || width >= (4 * height) || height >= (4 * width)) {
             width = randomNum(3, maxWidth());
@@ -142,8 +136,7 @@ function buildStretcher(width, height) {
         }
         newWidth = width;
         newHeight = height;
-    }
-    else {
+    } else {
         var dimensions = checkInput();
         newWidth = dimensions[0];
         newHeight = dimensions[1];
@@ -152,9 +145,12 @@ function buildStretcher(width, height) {
     setWidth(newWidth);
     setHeight(newHeight);
     /*centerCanvas();*/
-    if ($("#moreinfo").css("visibility") == "visible") {$("#moreinfo").css("visibility", "hidden");}
+    if ($("#moreinfo").css("visibility") == "visible") {
+        $("#moreinfo").css("visibility", "hidden");
+    }
     toggleCanvas("show");
 }
+
 function setWidth(newWidth) {
     var canvasBg = document.getElementById("paintingBg");
     canvasBg.width = newWidth;
@@ -163,6 +159,7 @@ function setWidth(newWidth) {
     var canvasFg = document.getElementById("paintingFg");
     canvasFg.width = newWidth;
 }
+
 function setHeight(newHeight) {
     var canvasBg = document.getElementById("paintingBg");
     canvasBg.height = newHeight;
@@ -171,7 +168,7 @@ function setHeight(newHeight) {
     var canvasFg = document.getElementById("paintingFg");
     canvasFg.height = newHeight;
 }
-/* This doesn't work like I want it to yet */
+
 function centerCanvas() {
     $("#paintingBg").css("left", "15%");
     $("#paintingBg").css("top", "15%");
@@ -181,22 +178,24 @@ function centerCanvas() {
     $("#paintingFg").css("top", "15%");
 }
 
-/* Show or hide canvas */
+// Show or hide canvas
 function toggleCanvas(option) {
-    if(option == "hide") {
+    if (option == "hide") {
         $("#paintingBg").css("visibility", "hidden");
         $("#paintingMg").css("visibility", "hidden");
         $("#paintingFg").css("visibility", "hidden");
-    }
-    else if(option == "show") {
+    } else if (option == "show") {
         $("#paintingBg").css("visibility", "visible");
         $("#paintingMg").css("visibility", "visible");
         $("#paintingFg").css("visibility", "visible");
     }
 }
 
-/* Get window dimension and set studio sized appropriately */
-function getWindowDimensions() {return[$(window).height(), $(window).width()];}
+// Get window dimension and set studio sized appropriately
+function getWindowDimensions() {
+    return [$(window).height(), $(window).width()];
+}
+
 function setStudioSize() {
     var dimensions = getWindowDimensions();
     var studioHeight = dimensions[0];
@@ -205,7 +204,7 @@ function setStudioSize() {
     $("#studio").css("height", studioHeight);
 }
 
-/* Deal with reest form */
+// Deal with reest form
 function reset() {
     var resetBg = document.forms["resetOptions"]["resetBg"];
     var resetMg = document.forms["resetOptions"]["resetMg"];
@@ -228,7 +227,7 @@ function reset() {
     }
 }
 
-/* Make the painting go away */
+// Make the painting go away
 function trash() {
     var contextBg = getBgContext();
     var contextMg = getMgContext();
@@ -241,47 +240,47 @@ function trash() {
     toggleCanvas("hide");
 }
 
-/* Swaps between info pane and canvas */
+// Swaps between info pane and canvas
 function toggleInfo() {
-    /* If the more info pane is hidden, display it, and show or hide the painting */
+    // If the more info pane is hidden, display it, and show or hide the painting
     if ($("#moreinfo").css("visibility") == "hidden") {
         $("#moreinfo").css("visibility", "visible");
         $("#moreinfoLink").text("Cool, I'll get back to painting now.");
         if ($("#paintingBg").css("visibility") == "visible") {
             toggleCanvas("hide");
+        } else {
+            toggleCanvas("hide");
         }
-        else {toggleCanvas("hide");}
     }
-    /* If it's visible, hide it, and show or hide the painting */
+    // If it's visible, hide it, and show or hide the painting
     else if ($("#moreinfo").css("visibility") == "visible") {
-    	$("#moreinfoLink").text("Gimmie the deets.");
+        $("#moreinfoLink").text("Gimmie the deets.");
         $("#moreinfo").css("visibility", "hidden");
         if ($("#paintingBg").css("visibility") == "visible") {
             toggleCanvas("show");
-        }
-        else if (getWidth() <= 49 && $("#paintingBg").css("visibility") == "hidden") {
+        } else if (getWidth() <= 49 && $("#paintingBg").css("visibility") == "hidden") {
             toggleCanvas("hide");
-        }
-        else {
+        } else {
             toggleCanvas("show");
         }
     }
 }
 
 
-/* The painters */
+// The painters
+
 function setBackground(color) {
     var context = getBgContext();
 
     if (color !== undefined) {
         context.fillStyle = color;
         context.fillRect(0, 0, getWidth() + 2, getHeight() + 2);
-    }
-    else {
+    } else {
         context.fillStyle = randomColor();
         context.fillRect(0, 0, getWidth() + 2, getHeight() + 2);
     }
 }
+
 function drawRectangles() {
     var context = getMgContext();
     var numMoves = randomNum(1);
@@ -290,6 +289,7 @@ function drawRectangles() {
         drawRectangle(context, 4, getWidth(), getHeight());
     }
 }
+
 function drawLines() {
     var i = 0;
     var numLines = randomNum(2, 5);
@@ -297,6 +297,7 @@ function drawLines() {
         drawLine();
     }
 }
+
 function drawRectangle(context, digits, widthLimit, heightLimit) {
     var opacity = 0;
     var shapeWidth = randomNum(digits, widthLimit);
@@ -306,20 +307,22 @@ function drawRectangle(context, digits, widthLimit, heightLimit) {
     context.fillStyle = randomColor();
     context.fillRect(left, top, shapeWidth, shapeHeight);
 }
+
 function drawTriangle() {
-	var context = getMgContext();
-	var pointA = randomNum(3, getWidth());
-	var pointB = randomNum(3, getWidth());
-	var x = randomNum(3, getWidth());
-	var y = randomNum(3, getWidth());
+    var context = getMgContext();
+    var pointA = randomNum(3, getWidth());
+    var pointB = randomNum(3, getWidth());
+    var x = randomNum(3, getWidth());
+    var y = randomNum(3, getWidth());
 
     context.beginPath();
     context.moveTo(x, y);
     context.lineTo(pointA, x);
-    context.lineTo(pointA ,pointB);
+    context.lineTo(pointA, pointB);
     context.fillStyle = randomColor();
     context.fill();
 }
+
 function drawLine() {
     var context = getFgContext();
     context.beginPath();
@@ -330,6 +333,7 @@ function drawLine() {
     context.stroke();
     context.closePath;
 }
+
 function drawGesture() {
     var context = getFgContext();
     var numCurves = 0;
@@ -341,7 +345,6 @@ function drawGesture() {
     context.beginPath();
     context.moveTo(randomNum(3, getWidth()), randomNum(3, getHeight()));
 
-    /* Make bezier curves */
     for (; i < numCurves; i++) {
         context.bezierCurveTo(randomNum(2.75, getWidth()), randomNum(2.75, getWidth()), randomNum(2.75, getWidth()), randomNum(2.75, getWidth()), randomNum(2.75, getWidth()), randomNum(2.75, getWidth()));
     }
