@@ -1,0 +1,3 @@
+# The Studio
+
+The Studio is an automatic painting generator built with JavaScript that enables anyone, regardless of artistic ability, to create a beautiful abstract painting at the click of a button (or a few buttons should you choose to stretch your creative muscles). The aim of this project began as a means to simply learn the HTML5 canvas, which quickly snowballed into a pet project relating to my own interests as a fine artist and painter.
